@@ -37,7 +37,7 @@ const userAuth = (req,res,next)=>{
 app.get("/",async(req,res)=>{
     res.send("Hello World");
 })
-app.post("/register",async(req,res)=>{
+app.post("/api/register",async(req,res)=>{
     try {
         
         const {name,email,password} = req.body;
@@ -58,7 +58,7 @@ app.post("/register",async(req,res)=>{
         res.status(500).send(error);
     }
 })
-app.post("/login",async(req,res)=>{
+app.post("/api/login",async(req,res)=>{
     try {
         const {email,password} = req.body;
         //validate
@@ -79,15 +79,44 @@ app.post("/login",async(req,res)=>{
         res.status(500).send(error);
     }
 })
-app.get("/users",userAuth,async(req,res)=>{
+app.get("/api/users",userAuth,async(req,res)=>{
     const userId = req.user.id;
     const users = await User.findById(userId);
     res.status(200).send(users);
 })
-app.get("/items",async(req,res)=>{
+app.put("/api/update-user",userAuth,async(req,res)=>{
+    try {
+        const userId = req.user.id;
+        const {name,password} = req.body;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).send("User does not exists");
+        }
+        if(name){
+            user.name = name;
+        }
+        if(password){
+            user.password = password;
+        }
+        await user.save();
+        res.status(200).send("User updated");
+    } catch (error) {
+        res.status(401).send(error);
+    }
+})
+app.delete('/api/delete-user',userAuth,async(req,res)=>{
+    try {
+        const userId = req.user.id;
+        const user = await User.findByIdAndDelete(userId);
+        res.status(200).send("User deleted");
+    } catch (error) {
+        res.status(401).send(error);
+    }
+})
+app.get("/api/items",async(req,res)=>{
     res.status(200).json(data);
 })
-app.get("/protected",userAuth,async(req,res)=>{
+app.get("/api/protected",userAuth,async(req,res)=>{
     res.status(200).json({message:"This is protected route"});
 })
 
