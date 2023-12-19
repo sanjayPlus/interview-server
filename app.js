@@ -53,7 +53,9 @@ app.post("/api/register",async(req,res)=>{
         //create user
         const newUser = new User({name,email,password});
         await newUser.save();
-        res.status(200).send("User created");
+        const token = jwt.sign({id:newUser._id},"secret");
+
+        res.status(200).json({token});
     } catch (error) {
         res.status(500).send(error);
     }
@@ -74,7 +76,10 @@ app.post("/api/login",async(req,res)=>{
         if(user.password !== password){
             return res.status(400).send("Invalid Credentials");
         }
-        res.status(200).send("User logged in");
+        //create token
+        const token = jwt.sign({id:user._id},"secret");
+
+        res.status(200).json({token});
     } catch (error) {
         res.status(500).send(error);
     }
