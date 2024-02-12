@@ -144,6 +144,6 @@ app.get("/api/protected", userAuth, (req, res) => {
     res.status(200).json({ message: "This is a protected route" });
 });
 
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log("Server is running on port 3000");
 });
