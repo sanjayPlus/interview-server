@@ -5,11 +5,11 @@ const app = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const data = require('./data');
-
+const cors = require("cors");
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors());
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log("Connected to DB");
 });
